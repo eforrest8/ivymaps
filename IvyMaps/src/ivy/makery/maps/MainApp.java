@@ -11,6 +11,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.transform.Scale;
 import javafx.stage.Stage;
 
 public class MainApp extends Application {
@@ -40,7 +41,7 @@ public class MainApp extends Application {
 			//Show the scene containing the root layout
 			Scene scene = new Scene(rootLayout);
 			primaryStage.setScene(scene);
-			primaryStage.setFullScreen(true); //switch to setFullScreen when not in testing
+			primaryStage.setFullScreen(true); //probably disable esc to close thing later
 			primaryStage.show();
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -69,8 +70,15 @@ public class MainApp extends Application {
 		return primaryStage;
 	}
 	
-	
-	// a change!
+	public static void scaleInterface(Scene scene) {
+		//determine scale factor
+		
+		
+		Scale scale = new Scale(scaleFactor, scaleFactor);
+		scale.setPivotX(0);
+		scale.setPivotY(0);
+		scene.getRoot().getTransforms().setAll(scale);
+	}
 	
 	
 	public static void main(String[] args) {
