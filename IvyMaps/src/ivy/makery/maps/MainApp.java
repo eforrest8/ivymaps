@@ -40,6 +40,7 @@ public class MainApp extends Application {
 			//Show the scene containing the root layout
 			Scene scene = new Scene(rootLayout);
 			primaryStage.setScene(scene);
+			primaryStage.setFullScreen(true); //switch to setFullScreen when not in testing
 			primaryStage.show();
 		} catch (IOException e) {
 			e.printStackTrace();
