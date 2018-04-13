@@ -3,7 +3,10 @@ package ivy.makery.maps;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
 
 import javafx.application.Application;
 import javafx.stage.Stage;
@@ -27,12 +30,29 @@ public class MainApp extends Application {
 	public void start(Stage primaryStage) {
 		
 		//database setup, should this go in a separate function?
-		Connection con;
+		Connection con = null;
+		Statement stmt = null;
 		try {
 			con = DriverManager.getConnection("jdbc:sqlite:test.db"); //TODO: make a real db when we have the data
 		} catch (SQLException e) {
 			System.out.println(e.getMessage());
 		}
+		//query strings
+		String queryClassSections =
+				"select DISTINCT section from class;";
+		//make some arrays with db contents
+		ArrayList<String> classSections = new ArrayList<String>();
+	    try {
+	        stmt = con.createStatement();
+	        ResultSet rs = stmt.executeQuery(queryClassSections);
+	        while (rs.next()) {
+	            classSections.add(rs.getString("section"));
+	        }
+	    } catch (SQLException e ) {
+	    	System.out.println(e.getMessage());
+	    } finally {
+	        //if (stmt != null) { stmt.close(); } uncomment this later
+	    }
 		//end database setup
 		
 		this.primaryStage = primaryStage;
