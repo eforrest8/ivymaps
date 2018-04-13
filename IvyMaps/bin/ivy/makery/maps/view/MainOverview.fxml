@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.Label?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.ButtonBar?>
 <?import javafx.scene.control.MenuButton?>
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.TableColumn?>
@@ -8,67 +9,54 @@
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.ColumnConstraints?>
-<?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
-<?import javafx.scene.layout.RowConstraints?>
-<?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="360.0" prefWidth="640.0" style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="340.0" prefWidth="650.0" style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <HBox prefHeight="360.0" prefWidth="640.0">
+      <HBox prefHeight="340.0" prefWidth="650.0">
          <children>
-            <Pane prefHeight="360.0" prefWidth="520.0">
+            <Pane prefHeight="340.0" prefWidth="650.0">
                <children>
-                  <ImageView fitHeight="360.0" fitWidth="518.0" pickOnBounds="true" preserveRatio="true" style="-fx-rotate: 180;">
+                  <ImageView fitHeight="340.0" fitWidth="650.0" pickOnBounds="true" preserveRatio="true" style="-fx-rotate: 180;">
                      <image>
                         <Image url="@../../../../../img/floorplan.jpg" />
                      </image>
                   </ImageView>
-                  <Label layoutX="35.0" layoutY="8.0" prefHeight="34.0" prefWidth="401.0" text="Ivy Tech Map Fisher Building 3rd Floor">
-                     <font>
-                        <Font size="23.0" />
-                     </font>
-                  </Label>
-               </children>
-            </Pane>
-            <GridPane prefHeight="360.0" prefWidth="232.0">
-              <columnConstraints>
-                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-              </columnConstraints>
-              <rowConstraints>
-                <RowConstraints maxHeight="69.60001220703126" minHeight="10.0" prefHeight="40.0" vgrow="SOMETIMES" />
-                <RowConstraints maxHeight="115.59998168945313" minHeight="0.0" prefHeight="40.0" vgrow="SOMETIMES" />
-                  <RowConstraints maxHeight="291.9999938964844" minHeight="10.0" prefHeight="40.0" vgrow="SOMETIMES" />
-                <RowConstraints maxHeight="291.9999938964844" minHeight="10.0" prefHeight="279.20001220703125" vgrow="SOMETIMES" />
-              </rowConstraints>
-               <children>
-                  <MenuButton mnemonicParsing="false" prefWidth="150.0" text="Select Class Name">
-                    <items>
-                      <MenuItem mnemonicParsing="false" text="Action 1" />
-                      <MenuItem mnemonicParsing="false" text="Action 2" />
-                    </items>
-                  </MenuButton>
-                  <MenuButton mnemonicParsing="false" prefWidth="150.0" text="Select Room Number" GridPane.rowIndex="1">
-                    <items>
-                      <MenuItem mnemonicParsing="false" text="Action 1" />
-                      <MenuItem mnemonicParsing="false" text="Action 2" />
-                    </items>
-                  </MenuButton>
-                  <MenuButton mnemonicParsing="false" prefWidth="150.0" text="Select Instructor" GridPane.rowIndex="2">
-                    <items>
-                      <MenuItem mnemonicParsing="false" text="Action 1" />
-                      <MenuItem mnemonicParsing="false" text="Action 2" />
-                    </items>
-                  </MenuButton>
-                  <TableView prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="3">
+                  <ButtonBar nodeOrientation="LEFT_TO_RIGHT" prefHeight="34.0" prefWidth="650.0">
+                     <buttons>
+                        <MenuButton alignment="CENTER" mnemonicParsing="false" prefHeight="30.0" prefWidth="150.0" text="Class Number">
+                          <items>
+                            <MenuItem mnemonicParsing="false" text="Action 1" />
+                            <MenuItem mnemonicParsing="false" text="Action 2" />
+                          </items>
+                        </MenuButton>
+                        <MenuButton alignment="CENTER" contentDisplay="CENTER" layoutX="112.0" layoutY="17.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="150.0" text="Class Section">
+                           <items>
+                              <MenuItem mnemonicParsing="false" text="Action 1" />
+                              <MenuItem mnemonicParsing="false" text="Action 2" />
+                           </items>
+                        </MenuButton>
+                     </buttons>
+                     <padding>
+                        <Insets right="273.0" />
+                     </padding>
+                  </ButtonBar>
+                  <TableView layoutX="413.0" layoutY="30.0" prefHeight="280.0" prefWidth="195.0">
                     <columns>
-                      <TableColumn prefWidth="75.0" text="C1" />
+                      <TableColumn prefWidth="68.00006103515625" text="Class &#10;Number&#10;" />
+                      <TableColumn minWidth="7.99993896484375" prefWidth="48.800048828125" text="Time" />
+                        <TableColumn prefWidth="84.7999267578125" text="Instructor" />
                     </columns>
+                     <opaqueInsets>
+                        <Insets />
+                     </opaqueInsets>
+                     <padding>
+                        <Insets top="5.0" />
+                     </padding>
                   </TableView>
                </children>
-            </GridPane>
+            </Pane>
          </children>
       </HBox>
    </children>
