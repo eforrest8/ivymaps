@@ -25,7 +25,7 @@
                   </ImageView>
                   <ButtonBar nodeOrientation="LEFT_TO_RIGHT" prefHeight="34.0" prefWidth="921.0">
                      <buttons>
-                        <MenuButton fx:id="btnClassSubject" alignment="CENTER" mnemonicParsing="false" onAction="#handleSubjectButtonAction" prefHeight="30.0" prefWidth="150.0" text="Class Subject">
+                        <MenuButton fx:id="btnClassSubject" alignment="CENTER" mnemonicParsing="false" onAction="#handleSubjectButtonAction" onMouseClicked="#handleSubjectButtonAction" prefHeight="30.0" prefWidth="150.0" text="Class Subject">
                           <items>
                             <MenuItem mnemonicParsing="false" text="Action 1" />
                             <MenuItem mnemonicParsing="false" text="Action 2" />
