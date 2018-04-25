@@ -25,13 +25,13 @@
                   </ImageView>
                   <ButtonBar nodeOrientation="LEFT_TO_RIGHT" prefHeight="34.0" prefWidth="921.0">
                      <buttons>
-                        <MenuButton fx:id="btnClassSubject" alignment="CENTER" mnemonicParsing="false" onAction="#handleSubjectButtonAction" onMouseClicked="#handleSubjectButtonClick" prefHeight="30.0" prefWidth="150.0" text="Class Subject">
+                        <MenuButton fx:id="btnClassSubject" alignment="CENTER" mnemonicParsing="false" prefHeight="30.0" prefWidth="150.0" text="Class Subject">
                           <items>
                             <MenuItem mnemonicParsing="false" text="Action 1" />
                             <MenuItem mnemonicParsing="false" text="Action 2" />
                           </items>
                         </MenuButton>
-                        <MenuButton fx:id="btnClassNumber" alignment="CENTER" contentDisplay="CENTER" layoutX="112.0" layoutY="17.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="150.0" text="Class Number">
+                        <MenuButton fx:id="btnClassNumber" alignment="CENTER" contentDisplay="CENTER" disable="true" layoutX="112.0" layoutY="17.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="150.0" text="Class Number">
                            <items>
                               <MenuItem mnemonicParsing="false" text="Action 1" />
                               <MenuItem mnemonicParsing="false" text="Action 2" />

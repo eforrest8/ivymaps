@@ -3,6 +3,7 @@ package ivy.makery.maps;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -25,6 +26,8 @@ public class MainApp extends Application {
 	
 	private Stage primaryStage;
 	private BorderPane rootLayout;
+	private ArrayList<String> classSubjects;
+	private ArrayList<ArrayList<String>> classNumbers;
 	
 	@Override
 	public void start(Stage primaryStage) {
@@ -32,26 +35,50 @@ public class MainApp extends Application {
 		//database setup, should this go in a separate function?
 		Connection con = null;
 		Statement stmt = null;
+		PreparedStatement pstmt = null;
 		try {
 			con = DriverManager.getConnection("jdbc:sqlite:test.db"); //TODO: make a real db when we have the data
+			stmt = con.createStatement();
+			ResultSet rs;
+			
+			//query strings
+			String queryClassSubjects =
+					"select DISTINCT section from class ORDER BY section ASC;"; //TODO: change section to subject
+			String queryClassNumbers =
+					"select DISTINCT classNumber from class where section = ? ORDER BY classNumber ASC;";
+			
+			//fill some arrays with db contents
+			classSubjects = new ArrayList<String>();
+		    rs = stmt.executeQuery(queryClassSubjects);
+		    
+		    while (rs.next()) {
+		        classSubjects.add(rs.getString("section"));
+		    }
+		    
+		    classNumbers = new ArrayList<ArrayList<String>>();
+		    pstmt = con.prepareStatement(queryClassNumbers);
+		    
+		    for (String x: classSubjects) {
+		    	ArrayList<String> tempNumbers = new ArrayList<String>();
+		    	pstmt.setString(1, x);
+		    	rs = pstmt.executeQuery();
+		    	
+		    	while (rs.next()) {
+			        tempNumbers.add(rs.getString("classNumber"));
+			    }
+		    	
+		    	classNumbers.add(new ArrayList<String>(tempNumbers));
+		    }
+		    
 		} catch (SQLException e) {
 			System.out.println(e.getMessage());
-		}
-		//query strings
-		String queryClassSections =
-				"select DISTINCT section from class;";
-		//make some arrays with db contents
-		ArrayList<String> classSections = new ArrayList<String>();
-	    try {
-	        stmt = con.createStatement();
-	        ResultSet rs = stmt.executeQuery(queryClassSections);
-	        while (rs.next()) {
-	            classSections.add(rs.getString("section"));
-	        }
-	    } catch (SQLException e ) {
-	    	System.out.println(e.getMessage());
-	    } finally {
-	        //if (stmt != null) { stmt.close(); } uncomment this later
+		} finally {
+	        if (stmt != null) { try {
+				stmt.close();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} }
 	    }
 		//end database setup
 		
@@ -93,6 +120,10 @@ public class MainApp extends Application {
 			
 			//Set main overview into the center of root layout
 			rootLayout.setCenter(mainOverview);
+			ClassSearchController controller = loader.<ClassSearchController>getController();
+			controller.setSubjectList(classSubjects);
+			controller.setNumberList(classNumbers);
+			controller.updateSubjectButton(); //call this only after setting all lists
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
