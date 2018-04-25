@@ -104,18 +104,6 @@ public class MainApp extends Application {
 		return primaryStage;
 	}
 	
-	public static void scaleInterface(Scene scene) {
-		//determine scale factor
-		//we might not actually need this scale crap, consider just using the correct resolution
-		
-		
-		Scale scale = new Scale(scaleFactor, scaleFactor);
-		scale.setPivotX(0);
-		scale.setPivotY(0);
-		scene.getRoot().getTransforms().setAll(scale);
-	}
-	
-	
 	public static void main(String[] args) {
 		launch(args);
 	}

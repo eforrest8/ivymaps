@@ -12,26 +12,26 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="340.0" prefWidth="650.0" style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/8.0.131" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1280.0" style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <HBox prefHeight="340.0" prefWidth="650.0">
+      <HBox prefHeight="720.0" prefWidth="1280.0">
          <children>
-            <Pane prefHeight="340.0" prefWidth="650.0">
+            <Pane prefHeight="720.0" prefWidth="1192.0">
                <children>
-                  <ImageView fitHeight="340.0" fitWidth="650.0" pickOnBounds="true" preserveRatio="true" style="-fx-rotate: 180;">
+                  <ImageView fitHeight="395.0" fitWidth="540.0" pickOnBounds="true" preserveRatio="true" style="-fx-rotate: 180;">
                      <image>
                         <Image url="@../../../../../img/floorplan.jpg" />
                      </image>
                   </ImageView>
-                  <ButtonBar nodeOrientation="LEFT_TO_RIGHT" prefHeight="34.0" prefWidth="650.0">
+                  <ButtonBar nodeOrientation="LEFT_TO_RIGHT" prefHeight="34.0" prefWidth="921.0">
                      <buttons>
-                        <MenuButton alignment="CENTER" mnemonicParsing="false" prefHeight="30.0" prefWidth="150.0" text="Class Number">
+                        <MenuButton fx:id="btnClassSubject" alignment="CENTER" mnemonicParsing="false" onAction="#handleSubjectButtonAction" prefHeight="30.0" prefWidth="150.0" text="Class Subject">
                           <items>
                             <MenuItem mnemonicParsing="false" text="Action 1" />
                             <MenuItem mnemonicParsing="false" text="Action 2" />
                           </items>
                         </MenuButton>
-                        <MenuButton alignment="CENTER" contentDisplay="CENTER" layoutX="112.0" layoutY="17.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="150.0" text="Class Section">
+                        <MenuButton fx:id="btnClassNumber" alignment="CENTER" contentDisplay="CENTER" layoutX="112.0" layoutY="17.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="150.0" text="Class Number">
                            <items>
                               <MenuItem mnemonicParsing="false" text="Action 1" />
                               <MenuItem mnemonicParsing="false" text="Action 2" />
@@ -42,21 +42,21 @@
                         <Insets right="273.0" />
                      </padding>
                   </ButtonBar>
-                  <TableView layoutX="413.0" layoutY="30.0" prefHeight="280.0" prefWidth="195.0">
-                    <columns>
-                      <TableColumn prefWidth="68.00006103515625" text="Class &#10;Number&#10;" />
-                      <TableColumn minWidth="7.99993896484375" prefWidth="48.800048828125" text="Time" />
-                        <TableColumn prefWidth="84.7999267578125" text="Instructor" />
-                    </columns>
-                     <opaqueInsets>
-                        <Insets />
-                     </opaqueInsets>
-                     <padding>
-                        <Insets top="5.0" />
-                     </padding>
-                  </TableView>
                </children>
             </Pane>
+            <TableView prefHeight="720.0" prefWidth="631.0">
+              <columns>
+                <TableColumn prefWidth="68.00006103515625" text="Class &#10;Number&#10;" />
+                <TableColumn minWidth="7.99993896484375" prefWidth="48.800048828125" text="Time" />
+                  <TableColumn prefWidth="84.7999267578125" text="Instructor" />
+              </columns>
+               <opaqueInsets>
+                  <Insets />
+               </opaqueInsets>
+               <padding>
+                  <Insets top="5.0" />
+               </padding>
+            </TableView>
          </children>
       </HBox>
    </children>
