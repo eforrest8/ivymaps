@@ -79,7 +79,9 @@ public class MainApp extends Application {
 		    
 		    while (rs.next()) {
 		    	classFullTable.add(
-		    			new Class(rs.getString("section"), rs.getString("classNumber"), rs.getString("classIdentifier")));
+		    			new Class(
+		    					rs.getString("section"), rs.getString("classNumber"), rs.getString("classIdentifier"),
+		    					rs.getString("name"), rs.getString("inTime"), rs.getString("instructor")));
 		    }
 		    
 		} catch (SQLException e) {
