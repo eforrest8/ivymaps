@@ -16,9 +16,9 @@
    <children>
       <HBox prefHeight="720.0" prefWidth="1280.0">
          <children>
-            <Pane prefHeight="720.0" prefWidth="1192.0">
+            <Pane prefHeight="720.0" prefWidth="766.0">
                <children>
-                  <ImageView fitHeight="395.0" fitWidth="540.0" pickOnBounds="true" preserveRatio="true" style="-fx-rotate: 180;">
+                  <ImageView fitHeight="720.0" fitWidth="1280.0" pickOnBounds="true" preserveRatio="true">
                      <image>
                         <Image url="@../../../../../img/floorplan.jpg" />
                      </image>
@@ -44,18 +44,24 @@
                   </ButtonBar>
                </children>
             </Pane>
-            <TableView prefHeight="720.0" prefWidth="631.0">
+            <TableView fx:id="resultsTable" opacity="0.6" prefHeight="720.0" prefWidth="631.0">
               <columns>
-                <TableColumn prefWidth="68.00006103515625" text="Class &#10;Number&#10;" />
-                <TableColumn minWidth="7.99993896484375" prefWidth="48.800048828125" text="Time" />
-                  <TableColumn prefWidth="84.7999267578125" text="Instructor" />
+                  <TableColumn fx:id="tblSubject" editable="false" prefWidth="50.0" resizable="false" text="Subject" />
+                <TableColumn fx:id="tblNumber" editable="false" prefWidth="50.0" resizable="false" text="Number&#10;" />
+                  <TableColumn fx:id="tblSection" editable="false" prefWidth="50.0" resizable="false" text="Section" />
+                  <TableColumn fx:id="tblTitle" editable="false" prefWidth="174.0" resizable="false" text="Title" />
+                <TableColumn fx:id="tblStartTime" editable="false" minWidth="7.99993896484375" prefWidth="199.0" text="Start" />
+                  <TableColumn fx:id="tblInstructor" editable="false" prefWidth="136.0" text="Instructor" />
               </columns>
                <opaqueInsets>
                   <Insets />
                </opaqueInsets>
-               <padding>
+               <columnResizePolicy>
+                  <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+               </columnResizePolicy>
+               <!-- <padding>
                   <Insets top="5.0" />
-               </padding>
+               </padding> -->
             </TableView>
          </children>
       </HBox>

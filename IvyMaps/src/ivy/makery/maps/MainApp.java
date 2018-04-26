@@ -10,6 +10,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 
 import javafx.application.Application;
+import javafx.collections.ObservableList;
 import javafx.stage.Stage;
 
 //import javafx.application.Application;
@@ -28,6 +29,7 @@ public class MainApp extends Application {
 	private BorderPane rootLayout;
 	private ArrayList<String> classSubjects;
 	private ArrayList<ArrayList<String>> classNumbers;
+	private ArrayList<Class> classFullTable;
 	
 	@Override
 	public void start(Stage primaryStage) {
@@ -43,9 +45,11 @@ public class MainApp extends Application {
 			
 			//query strings
 			String queryClassSubjects =
-					"select DISTINCT section from class ORDER BY section ASC;"; //TODO: change section to subject
+					"select DISTINCT section from class ORDER BY section ASC;"; //TODO: change section to subject in all these
 			String queryClassNumbers =
 					"select DISTINCT classNumber from class where section = ? ORDER BY classNumber ASC;";
+			String queryFullTable =
+					"select * from class ORDER BY inTime ASC;";
 			
 			//fill some arrays with db contents
 			classSubjects = new ArrayList<String>();
@@ -70,15 +74,27 @@ public class MainApp extends Application {
 		    	classNumbers.add(new ArrayList<String>(tempNumbers));
 		    }
 		    
+		    classFullTable = new ArrayList<Class>();
+		    rs = stmt.executeQuery(queryFullTable);
+		    
+		    while (rs.next()) {
+		    	classFullTable.add(
+		    			new Class(rs.getString("section"), rs.getString("classNumber"), rs.getString("classIdentifier")));
+		    }
+		    
 		} catch (SQLException e) {
 			System.out.println(e.getMessage());
 		} finally {
-	        if (stmt != null) { try {
-				stmt.close();
+			try {
+				if (stmt != null) {
+					stmt.close();
+				}
+				if (pstmt != null) {
+					pstmt.close();
+				}
 			} catch (SQLException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
-			} }
+			}
 	    }
 		//end database setup
 		
@@ -123,6 +139,7 @@ public class MainApp extends Application {
 			ClassSearchController controller = loader.<ClassSearchController>getController();
 			controller.setSubjectList(classSubjects);
 			controller.setNumberList(classNumbers);
+			controller.setFullTable(classFullTable);
 			controller.updateSubjectButton(); //call this only after setting all lists
 		} catch (IOException e) {
 			e.printStackTrace();
