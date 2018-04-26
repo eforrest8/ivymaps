@@ -79,7 +79,7 @@ public class MainApp extends Application {
 		    
 		    while (rs.next()) {
 		    	classFullTable.add(
-		    			new Class(
+		    			new Class(//TODO: update this with new database version, include all properties
 		    					rs.getString("section"), rs.getString("classNumber"), rs.getString("classIdentifier"),
 		    					rs.getString("name"), rs.getString("inTime"), rs.getString("instructor")));
 		    }
@@ -105,7 +105,7 @@ public class MainApp extends Application {
 		
 		initRootLayout();
 		
-		showMainOverview();
+		showMainOverview(); //TODO: implement ui reset after extended inactivity
 	}
 
 	//Initializes the root layout
