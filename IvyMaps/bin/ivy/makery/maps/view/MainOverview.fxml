@@ -49,9 +49,9 @@
                   <TableColumn fx:id="tblSubject" editable="false" prefWidth="50.0" resizable="false" text="Subject" />
                 <TableColumn fx:id="tblNumber" editable="false" prefWidth="50.0" resizable="false" text="Number&#10;" />
                   <TableColumn fx:id="tblSection" editable="false" prefWidth="50.0" resizable="false" text="Section" />
-                  <TableColumn fx:id="tblTitle" editable="false" prefWidth="174.0" resizable="false" text="Title" />
-                <TableColumn fx:id="tblStartTime" editable="false" minWidth="7.99993896484375" prefWidth="199.0" text="Start" />
-                  <TableColumn fx:id="tblInstructor" editable="false" prefWidth="136.0" text="Instructor" />
+                  <TableColumn fx:id="tblTitle" editable="false" prefWidth="200.0" resizable="false" text="Title" />
+                <TableColumn fx:id="tblStartTime" editable="false" minWidth="7.99993896484375" prefWidth="50.0" resizable="false" text="Start" />
+                  <TableColumn fx:id="tblInstructor" editable="false" prefWidth="172.0" resizable="false" text="Instructor" />
               </columns>
                <opaqueInsets>
                   <Insets />
