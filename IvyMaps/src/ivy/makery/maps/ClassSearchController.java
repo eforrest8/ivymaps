@@ -33,7 +33,6 @@ public class ClassSearchController {
 	private ArrayList<ArrayList<String>> numberList;
 	private ArrayList<Class> fullTable;
 	private ObservableList<Class> tableData = FXCollections.observableArrayList();
-	private final GraphicsContext gc = canvas.getGraphicsContext2D();
 	
 	//points for drawing graphics
 	//Point2D.Double f320 = new Point2D.Double(810, 825);
@@ -55,6 +54,7 @@ public class ClassSearchController {
 		
 		resultsTable.getSelectionModel().selectedItemProperty().addListener(newSelection -> {
 			//TODO: implement map highlights based on result selection
+			GraphicsContext gc = canvas.getGraphicsContext2D();
 			gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
 			gc.setFill(Color.GREEN);
 			gc.setStroke(Color.LIGHTGREEN);
@@ -109,6 +109,7 @@ public class ClassSearchController {
 		});
 	}
 	public void updateResultsTable() {
+		resultsTable.getSelectionModel().clearSelection();
 		if (!tableData.isEmpty()) {
 			tableData.clear();
 		}
