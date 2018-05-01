@@ -81,7 +81,8 @@ public class MainApp extends Application {
 		    	classFullTable.add(
 		    			new Class(//TODO: update this with new database version, include all properties
 		    					rs.getString("section"), rs.getString("classNumber"), rs.getString("classIdentifier"),
-		    					rs.getString("name"), rs.getString("inTime"), rs.getString("instructor")));
+		    					rs.getString("name"), new String[] {"Monday"}, rs.getString("instructor"),
+		    					new String[] {"12:00", "12:30", "13:00"}, new String[] {"321"}));
 		    }
 		    
 		} catch (SQLException e) {

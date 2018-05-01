@@ -2,9 +2,13 @@ package ivy.makery.maps;
 
 import java.util.ArrayList;
 
+import javafx.scene.paint.Color;
+
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.MenuButton;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TableColumn;
@@ -22,12 +26,21 @@ public class ClassSearchController {
 	@FXML private TableColumn<Class, String> tblStartTime;
 	@FXML private TableColumn<Class, String> tblInstructor;
 	@FXML private TableView<Class> resultsTable;
+	@FXML private Canvas canvas;
 	private String subjectSelection;
 	private String numberSelection;
 	private ArrayList<String> subjectList;
 	private ArrayList<ArrayList<String>> numberList;
 	private ArrayList<Class> fullTable;
 	private ObservableList<Class> tableData = FXCollections.observableArrayList();
+	private final GraphicsContext gc = canvas.getGraphicsContext2D();
+	
+	//points for drawing graphics
+	//Point2D.Double f320 = new Point2D.Double(810, 825);
+	Room[] rooms = {
+			new Room(810, 825, "320"),
+			new Room(720, 1100, "321")
+	};
 	
 	//methods
 	public void initialize() {
@@ -42,10 +55,18 @@ public class ClassSearchController {
 		
 		resultsTable.getSelectionModel().selectedItemProperty().addListener(newSelection -> {
 			//TODO: implement map highlights based on result selection
-			if (newSelection == null) {
-				//nothing is selected
-			} else {
+			gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
+			gc.setFill(Color.GREEN);
+			gc.setStroke(Color.LIGHTGREEN);
+			gc.setLineWidth(4);
+			if (newSelection != null) {
 				//SOMEthing is selected
+				String primaryRoom = resultsTable.getSelectionModel().selectedItemProperty().getValue().getRooms()[0];
+				for (Room x: rooms) {
+					if (x.getRoomNumber() == primaryRoom) {
+						gc.fillOval(x.getX(), x.getY(), 64, 64);
+					}
+				}
 			}
 		});
 	}
@@ -57,7 +78,6 @@ public class ClassSearchController {
 			MenuItem item = new MenuItem(x);
 			
 			item.setOnAction(e -> {
-				//TODO: event handler; what entries do when clicked
 				subjectSelection = item.getText();
 				btnClassSubject.setText("Class Subject (" + subjectSelection + ")");
 				updateNumberButton();
@@ -76,7 +96,6 @@ public class ClassSearchController {
 					MenuItem item = new MenuItem(x2);
 					
 					item.setOnAction(e -> {
-						//TODO: event handler; what entries do when clicked
 						numberSelection = item.getText();
 						btnClassNumber.setText("Class Number (" + numberSelection + ")");
 						updateResultsTable();
