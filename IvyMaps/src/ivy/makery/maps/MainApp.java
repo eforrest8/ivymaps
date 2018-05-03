@@ -35,6 +35,8 @@ public class MainApp extends Application {
 	private ArrayList<String> classSubjects;
 	private ArrayList<ArrayList<String>> classNumbers;
 	private ArrayList<Class> classFullTable;
+	private ArrayList<Advisor> advisorFullTable;
+	private AnchorPane mainMenu;
 	
 	@Override
 	public void start(Stage primaryStage) {
@@ -59,6 +61,8 @@ public class MainApp extends Application {
 					"select DISTINCT course_number from class where subject = ? ORDER BY course_number ASC;";
 			String queryFullTable =
 					"select * from class;";
+			String queryAdvisorFullTable =
+					"select * from advisor;";
 			
 			//function to update database if new csv files are available
 			updateDatabase(con);
@@ -126,6 +130,29 @@ public class MainApp extends Application {
 		    			times.toArray(new String[times.size()]), rooms.toArray(new String[rooms.size()])));
 		    }
 		    
+		    advisorFullTable = new ArrayList<Advisor>();
+		    rs = stmt.executeQuery(queryAdvisorFullTable);
+		    
+		    while (rs.next()) {
+		    	String name = rs.getString("person");
+		    	String room = rs.getString("room_number");
+		    	ArrayList<String> days = new ArrayList<String>();
+		    	ArrayList<String> times = new ArrayList<String>();
+		    	ResultSet rs2;
+		    	
+		    	rs2 = stmt2.executeQuery("SELECT DISTINCT day FROM advisor_schedules WHERE advisor = \"" + name + "\";");
+		    	while (rs2.next()) {
+		    		days.add(rs2.getString("day"));
+		    	}
+		    	
+		    	rs2 = stmt2.executeQuery("SELECT DISTINCT time FROM advisor_schedules WHERE advisor = \"" + name + "\" ORDER BY time ASC;");
+		    	while (rs2.next()) {
+		    		times.add(rs2.getString("time"));
+		    	}
+		    	
+		    	advisorFullTable.add(new Advisor(name, days.toArray(new String[days.size()]), times.toArray(new String[times.size()]), room));
+		    }
+		    
 		} catch (SQLException e) {
 			System.out.println(e.getMessage());
 		} catch (FileNotFoundException e) {
@@ -151,10 +178,12 @@ public class MainApp extends Application {
 		this.primaryStage = primaryStage;
 		this.primaryStage.setTitle("Ivy Maps");
 		
+		//some weird layout stuff that should work???
 		initRootLayout();
-		
-		showMainOverview(); //TODO: implement ui reset after extended inactivity
-		
+		MenuController controller = initMainMenu();
+		AnchorPane mainOverview = showMainOverview(mainMenu); //TODO: implement ui reset after extended inactivity
+		AnchorPane advisorOverview = showAdvisorOverview(mainMenu);
+		showMainMenu(controller, mainOverview, advisorOverview);
 	}
 
 	//Initializes the root layout
@@ -176,14 +205,40 @@ public class MainApp extends Application {
 		}
 	}
 	
+	public MenuController initMainMenu() {
+		MenuController controller = null;
+		try {
+			//Load main overview
+			FXMLLoader loader = new FXMLLoader();
+			loader.setLocation(MainApp.class.getResource("view/MainMenu.fxml"));
+			mainMenu = (AnchorPane) loader.load();
+			controller = loader.<MenuController>getController();
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return controller;
+	}
+	
+	public void showMainMenu(MenuController controller, AnchorPane mainOverview, AnchorPane advisorOverview) {
+		//Set main overview into the center of root layout
+		rootLayout.setCenter(mainMenu);
+		FXMLLoader loader = new FXMLLoader();
+		loader.setLocation(MainApp.class.getResource("view/MainMenu.fxml"));
+		
+		controller.setOtherNodes(rootLayout, mainOverview, advisorOverview); // TODO: add advisorOverview
+	}
+	
 	//Show the main overview inside the root layout.
 	
-	public void showMainOverview() {
+	public AnchorPane showMainOverview(AnchorPane mainMenu) {
+		AnchorPane mainOverview = null;
 		try {
 			//Load main overview
 			FXMLLoader loader = new FXMLLoader();
 			loader.setLocation(MainApp.class.getResource("view/MainOverview.fxml"));
-			AnchorPane mainOverview = (AnchorPane) loader.load();
+			mainOverview = (AnchorPane) loader.load();
+			//mainOverview.setVisible(false);
 			
 			//Set main overview into the center of root layout
 			rootLayout.setCenter(mainOverview);
@@ -191,10 +246,33 @@ public class MainApp extends Application {
 			controller.setSubjectList(classSubjects);
 			controller.setNumberList(classNumbers);
 			controller.setFullTable(classFullTable);
+			controller.setNodes(rootLayout, mainMenu);
 			controller.updateSubjectButton(); //call this only after setting all lists
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		return mainOverview;
+	}
+	
+	public AnchorPane showAdvisorOverview(AnchorPane mainMenu) {
+		AnchorPane mainOverview = null;
+		try {
+			//Load main overview
+			FXMLLoader loader = new FXMLLoader();
+			loader.setLocation(MainApp.class.getResource("view/AdvisorOverview.fxml"));
+			mainOverview = (AnchorPane) loader.load();
+			//mainOverview.setVisible(false);
+			
+			//Set main overview into the center of root layout
+			rootLayout.setCenter(mainOverview);
+			AdvisorSearchController controller = loader.<AdvisorSearchController>getController();
+			controller.setFullTable(advisorFullTable);
+			controller.setNodes(rootLayout, mainMenu);
+			controller.updateResultsTable();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return mainOverview;
 	}
 	
 	//Returns the main stage

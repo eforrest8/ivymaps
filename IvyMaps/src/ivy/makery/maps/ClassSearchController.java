@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
-import javafx.stage.Stage;
 import javafx.util.Callback;
 import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
@@ -21,8 +20,11 @@ import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.BorderPane;
 
 public class ClassSearchController {
+	@FXML private AnchorPane root;
 	@FXML private Button btnBack;
 	@FXML private MenuButton btnClassSubject;
 	@FXML private MenuButton btnClassNumber;
@@ -35,6 +37,8 @@ public class ClassSearchController {
 	@FXML private TableColumn<Class, String> tblInstructor;
 	@FXML private TableView<Class> resultsTable;
 	@FXML private Canvas canvas;
+	private BorderPane rootLayout;
+	private AnchorPane mainMenu;
 	private String subjectSelection;
 	private String numberSelection;
 	private ArrayList<String> subjectList;
@@ -43,7 +47,6 @@ public class ClassSearchController {
 	private ObservableList<Class> tableData = FXCollections.observableArrayList();
 	
 	//points for drawing graphics
-	//TODO: finish these
 	Room[] rooms = {
 			new Room(340, 350, "320"),
 			new Room(305, 465, "321"),
@@ -117,7 +120,6 @@ public class ClassSearchController {
 		gc.fillText("You are here", 435, 420);
 		
 		resultsTable.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
-			//TODO: implement map highlights based on result selection
 			gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
 			gc.setFill(Color.GREEN);
 			gc.setStroke(Color.LIGHTGREEN);
@@ -208,10 +210,20 @@ public class ClassSearchController {
 	}
 	@FXML
 	private void back() {
-		Stage stage = (Stage)btnBack.getScene().getWindow();
-		stage.close();
+		tableData.clear();
+		subjectSelection = null;
+		numberSelection = null;
+		btnClassSubject.setText("Class Subject");
+		btnClassNumber.setText("Class Number");
+		btnClassNumber.setDisable(true);
+		rootLayout.setCenter(mainMenu);
+		//root.setVisible(false);
 	}
 	//setters
+	public void setNodes(BorderPane rootLayout, AnchorPane mainMenu) {
+		this.rootLayout = rootLayout;
+		this.mainMenu = mainMenu;
+	}
 	public void setSubjectList(ArrayList<String> list) {
 		this.subjectList = list;
 	}
