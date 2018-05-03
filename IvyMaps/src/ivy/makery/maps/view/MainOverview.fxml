@@ -2,6 +2,7 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.canvas.Canvas?>
+<?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ButtonBar?>
 <?import javafx.scene.control.MenuButton?>
 <?import javafx.scene.control.MenuItem?>
@@ -19,14 +20,15 @@
          <children>
             <Pane prefHeight="720.0" prefWidth="766.0">
                <children>
-                  <Canvas fx:id="canvas" height="720.0" width="948.0" opacity="0.6" />
                   <ImageView fitHeight="720.0" fitWidth="1280.0" pickOnBounds="true" preserveRatio="true">
                      <image>
                         <Image url="@../../../../../img/floorplan.jpg" />
                      </image>
                   </ImageView>
-                  <ButtonBar nodeOrientation="LEFT_TO_RIGHT" prefHeight="34.0" prefWidth="921.0">
+               	  <Canvas fx:id="canvas" height="720.0" width="948.0" />
+                  <ButtonBar nodeOrientation="LEFT_TO_RIGHT" prefHeight="34.0" prefWidth="708.0">
                      <buttons>
+                        <Button fx:id="btnBack" mnemonicParsing="false" onAction="#back" text="Back to menu" />
                         <MenuButton fx:id="btnClassSubject" alignment="CENTER" mnemonicParsing="false" prefHeight="30.0" prefWidth="150.0" text="Class Subject">
                           <items>
                             <MenuItem mnemonicParsing="false" text="Action 1" />
@@ -46,15 +48,15 @@
                   </ButtonBar>
                </children>
             </Pane>
-            <TableView fx:id="resultsTable" fixedCellSize="48.0" opacity="0.6" prefHeight="720.0" prefWidth="631.0">
+            <TableView fx:id="resultsTable" fixedCellSize="48.0" maxHeight="720.0" opacity="0.6" prefHeight="720.0" prefWidth="631.0">
               <columns>
                   <TableColumn fx:id="tblSubject" editable="false" prefWidth="50.0" resizable="false" text="Subject" />
                 <TableColumn fx:id="tblNumber" editable="false" prefWidth="50.0" resizable="false" text="Number&#10;" />
                   <TableColumn fx:id="tblSection" editable="false" prefWidth="50.0" resizable="false" text="Section" />
-                  <TableColumn fx:id="tblTitle" editable="false" prefWidth="200.0" resizable="false" text="Title" />
-                  <TableColumn fx:id="tblDays" editable="false" prefWidth="50.0" resizable="false" text="Days" />
-                <TableColumn fx:id="tblStartTime" editable="false" minWidth="7.99993896484375" prefWidth="46.0" resizable="false" text="Start" />
-                  <TableColumn fx:id="tblInstructor" editable="false" prefWidth="126.0" resizable="false" text="Instructor" />
+                  <TableColumn fx:id="tblTitle" editable="false" prefWidth="180.0" resizable="false" text="Title" />
+                  <TableColumn fx:id="tblDays" editable="false" prefWidth="70.0" resizable="false" text="Days" />
+                <TableColumn fx:id="tblStartTime" editable="false" minWidth="7.99993896484375" prefWidth="50.0" resizable="false" text="Start" />
+                  <TableColumn fx:id="tblInstructor" editable="false" prefWidth="120.0" resizable="false" text="Instructor" />
               </columns>
                <opaqueInsets>
                   <Insets />

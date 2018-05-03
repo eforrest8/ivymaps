@@ -10,15 +10,15 @@ public class Class {
 	private final SimpleStringProperty days;
 	private final SimpleStringProperty startTime;
 	private final SimpleStringProperty endTime;
-	private final SimpleStringProperty instructor;
+	private final String[] instructor;
 	private final String[] rooms;
 	
-	Class(String subject, String number, String section, String title, String[] daysArray, String instructor, String[] blocks, String[] rooms) {
+	Class(String subject, String number, String section, String title, String[] daysArray, String[] instructor, String[] blocks, String[] rooms) {
 		this.subject = new SimpleStringProperty(subject);
 		this.number = new SimpleStringProperty(number);
 		this.section = new SimpleStringProperty(section);
 		this.title = new SimpleStringProperty(title);
-		this.instructor = new SimpleStringProperty(instructor);
+		this.instructor = instructor;
 		this.startTime = new SimpleStringProperty(blocks[0]);
 		this.endTime = new SimpleStringProperty(blocks[blocks.length - 1]);
 		this.rooms = rooms;
@@ -47,15 +47,22 @@ public class Class {
 	}
 
 	public String getDays() {
-		return days.get();
+		return days.get();//might need to format this
 	}
 
 	public String getStartTime() {
 		int hourNumber = Integer.parseInt(startTime.get().substring(0, 1));
+		String hourNumberString = "";
+		String ampm = "am";
 		if (hourNumber >= 13) {
-			hourNumber -= 12;
+			hourNumber -= 12;//TODO: fix time formatting
+			ampm = "pm";
 		}
-		String formattedTime = Integer.toString(hourNumber) + startTime.get().substring(2, 4);
+		hourNumberString = Integer.toString(hourNumber);
+		//if (hourNumberString.length() <= 1) {
+		//	hourNumberString = "0" + hourNumberString;
+		//}
+		String formattedTime = hourNumberString + ":" + startTime.get().substring(3) + ampm;
 		return formattedTime;
 	}
 
@@ -69,7 +76,13 @@ public class Class {
 	}
 
 	public String getInstructor() {
-		return instructor.get();
+		String result;
+		if (instructor.length > 1) {
+			result = instructor[0] + ", " + instructor[1];
+		} else {
+			result = instructor[0];
+		}
+		return result;
 	}
 
 	public String[] getRooms() {
