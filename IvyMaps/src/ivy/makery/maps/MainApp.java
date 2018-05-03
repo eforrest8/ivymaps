@@ -1,10 +1,7 @@
 package ivy.makery.maps;
 
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
-import java.io.Reader;
-import java.sql.Array;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -12,15 +9,10 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.Arrays;
-
-import org.apache.commons.csv.CSVFormat;
-import org.apache.commons.csv.CSVRecord;
 
 import javafx.application.Application;
 import javafx.stage.Stage;
 
-//import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
@@ -287,8 +279,8 @@ public class MainApp extends Application {
 	
 	public void updateDatabase(Connection con) throws IOException {
 		//query strings
-		String queryVersion =
-				"select version from meta;";
+		//String queryVersion =
+		//		"select version from meta;";
 		/*
 		//main database
 		Reader in = new FileReader("szrcsch_16713180.csv");
