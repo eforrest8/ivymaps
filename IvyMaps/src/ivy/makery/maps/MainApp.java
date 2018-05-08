@@ -1,7 +1,11 @@
 package ivy.makery.maps;
 
+import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
+import java.io.Reader;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -9,6 +13,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+
+import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVRecord;
 
 import javafx.application.Application;
 import javafx.stage.Stage;
@@ -40,7 +47,9 @@ public class MainApp extends Application {
 		Statement stmt = null;
 		PreparedStatement pstmt = null;
 		try {
-			con = DriverManager.getConnection("jdbc:sqlite:kiosk.db"); //TODO: make a real db when we have the data
+			File kioskdb = new File("kiosk.db");
+			Boolean dbNeedsInit = !kioskdb.exists();
+			con = DriverManager.getConnection("jdbc:sqlite:kiosk.db");
 			con2 = DriverManager.getConnection("jdbc:sqlite:kiosk.db");
 			stmt = con.createStatement();
 			Statement stmt2 = con2.createStatement();
@@ -55,6 +64,11 @@ public class MainApp extends Application {
 					"select * from class;";
 			String queryAdvisorFullTable =
 					"select * from advisor;";
+			
+			//if db needs init, do it
+			if (dbNeedsInit) {
+				initDatabase(stmt);
+			}
 			
 			//function to update database if new csv files are available
 			updateDatabase(con);
@@ -97,6 +111,11 @@ public class MainApp extends Application {
 		    	ArrayList<String> rooms = new ArrayList<String>();
 		    	ResultSet rs2;
 		    	
+		    	/* 
+		    	 * these things should probably be removed because this whole thing can be
+		    	 * simplified by using a join in the initial query.
+		    	 * there does need to be some effort exerted in preventing duplicate crns then, however.
+		    	 */
 		    	rs2 = stmt2.executeQuery("SELECT DISTINCT day FROM class_schedules WHERE class_number = \"" + crn + "\";");
 		    	while (rs2.next()) {
 		    		days.add(rs2.getString("day"));
@@ -277,20 +296,247 @@ public class MainApp extends Application {
 		launch(args);
 	}
 	
-	public void updateDatabase(Connection con) throws IOException {
+	public void updateDatabase(Connection con) throws IOException, SQLException {
 		//query strings
 		//String queryVersion =
 		//		"select version from meta;";
-		/*
-		//main database
-		Reader in = new FileReader("szrcsch_16713180.csv");
+		String deleteClassTables =
+				"delete from class;"
+				+ "delete from classroom;"
+				+ "delete from instructors;"
+				+ "delete from class_schedules;";
+		String deleteAdvisorTables =
+				"delete from advisor;"
+				+ "delete from advisor_schedules;";
+		
+		Statement stmt = con.createStatement();
+		//does the csv file exist?
+		File classCSV = new File("szrcsch_16713180.csv"); //change this to something simple like "class.csv" later
+		File advisorCSV = new File("FacultySchedule.csv");
+		if (!classCSV.exists()) {
+			return;
+		}
+		//check version, quit if not new
+		//not currently implemented; database will update every launch as long as there is a csv to update from
+		
+		stmt.executeUpdate(deleteClassTables);
+		
+		//main database (class data)
+		Reader in = new FileReader(classCSV);
 		Iterable<CSVRecord> records = CSVFormat.EXCEL.parse(in);
 		for (CSVRecord record : records) {
+			String course_id = record.get(2);
+			String section_id = record.get(3);
 			String crn = record.get(4);
+			String title = record.get(5);
+			String days = record.get(8);
+			String time = record.get(9);
+			String building = record.get(11);
 			String room = record.get(12);
-			if (room.startsWith("F")) {
-				System.out.println(crn);
+			String instructor = record.get(14);
+			
+			if (!room.isEmpty()) {
+				if (building.equals("Fisher Campus") && room.substring(1, 2).equals("3")) {
+					//this entry is a class taking place on the third floor (or higher, technically) of the fisher building
+					String roomNum = room.substring(1);
+					String subject = course_id.substring(0, 3);
+					String courseNum = course_id.substring(4, 6);
+					String[] daysArray = days.split("");
+					ArrayList<String> timeBlocks = new ArrayList<String>();
+					
+					Boolean done = false;
+					String startTime = time.split("-")[0];
+					String endTime = time.split("-")[1];
+					if (startTime.endsWith("pm")) {
+						startTime = Integer.toString(Integer.parseInt(startTime.split(":")[0]) + 12) + startTime.substring(startTime.indexOf(":"), startTime.length() - 2);
+					} else {
+						startTime = startTime.substring(0, startTime.length() - 2);
+					}
+					if (endTime.endsWith("pm")) {
+						endTime = Integer.toString(Integer.parseInt(endTime.split(":")[0]) + 12) + endTime.substring(endTime.indexOf(":"), endTime.length() - 2);
+					} else {
+						endTime = endTime.substring(0, endTime.length() - 2);
+					}
+					int hour = Integer.parseInt(startTime.split(":")[0]);
+					int minute = Integer.parseInt(startTime.split(":")[1]);
+					int endHour = Integer.parseInt(endTime.split(":")[0]);
+					int endMinute = Integer.parseInt(endTime.split(":")[1]);
+					while (done == false); {
+						if (hour >= endHour) {
+							if (minute >= endMinute) {
+								timeBlocks.add(Integer.toString(hour) + ":" + Integer.toString(endMinute));
+								done = true;
+							} else {
+								timeBlocks.add(Integer.toString(hour) + ":" + Integer.toString(minute));
+								minute += 30;
+							}
+						} else {
+							timeBlocks.add(Integer.toString(hour) + ":" + Integer.toString(minute));
+							hour++;
+						}
+					}
+					
+					stmt.executeUpdate(
+							"insert into room values (\"" + roomNum + "\")"
+							+ "where not exists (select number from room where number = \"" + roomNum + "\");");
+					stmt.executeUpdate(
+							"insert or ignore into people values (\"" + instructor + "\");");
+					stmt.executeUpdate(
+							"insert into class values (\"" + crn + "\",\"" + subject + "\",\"" + courseNum + "\",\"" + section_id + "\",\"" + title + "\")"
+							+ "where not exists (select crn from class where crn = \"" + crn + "\");");
+					stmt.executeUpdate(
+							"insert or ignore into classrooms values (\"" + roomNum + "\",\"" + crn + "\");");
+					stmt.executeUpdate(
+							"insert or ignore into instructors values (\"" + instructor + "\",\"" + crn + "\");");
+					for (String x: daysArray) {
+						String fullDay = "";
+						switch (x) {
+						case "M":
+							fullDay = "Monday";
+							break;
+						case "T":
+							fullDay = "Tuesday";
+							break;
+						case "W":
+							fullDay = "Wednesday";
+							break;
+						case "R":
+							fullDay = "Thursday";
+							break;
+						case "F":
+							fullDay = "Friday";
+							break;
+						case "S":
+							fullDay = "Saturday";
+							break;
+						}
+						for (String x2: timeBlocks) {
+							stmt.executeUpdate(
+									"insert or ignore into class_schedules values (\"" + crn + "\",\"" + x2 + "\",\"" + fullDay + "\");");
+						}
+					}
+				}
 			}
-		}*/
+		}
+		
+		//now advisor data
+		if (!advisorCSV.exists()) {
+			return;
+		}
+		
+		stmt.executeUpdate(deleteAdvisorTables);
+		
+		try(BufferedReader advisorStream = new BufferedReader(new FileReader(advisorCSV))) {
+		    String line = advisorStream.readLine(); //this skips the first line, this is intentional
+		    while ((line = advisorStream.readLine()) != null) {
+		        //parse this line
+		    	String advisorName = "";
+		    	String[] lineArray = line.split("^");
+		    	if (lineArray[0].contains(" ")) { // if the first field contains a space, it is a name
+		    		stmt.executeUpdate(
+							"insert or ignore into people values (\"" + lineArray[0] + "\");");
+		    		stmt.executeUpdate(
+		    				"insert or ignore into advisor values (\"" + lineArray[0] + "\",\"" + lineArray[lineArray.length - 1] + "\");");
+		    		advisorName = lineArray[lineArray.length - 1];
+		    	} else { // if no space, it is a weekday
+		    		if (!lineArray[1].equals("N/A")) {
+		    			for (int i = 0; i < (lineArray.length - 1) / 3; i++) {
+		    				if (lineArray[3 + (i * 3)].equals("Office")) {
+		    					String startTime = lineArray[1 + (i * 3)];
+		    					String endTime = lineArray[2 + (i * 3)];
+		    					ArrayList<String> timeBlocks = new ArrayList<String>();
+		    					//convert to 24-hour
+		    					if (startTime.endsWith("P")) {
+		    						startTime = Integer.toString(Integer.parseInt(startTime.split(":")[0]) + 12) + startTime.substring(startTime.indexOf(":"), startTime.length() - 2);
+		    					} else {
+		    						startTime = startTime.substring(0, startTime.length() - 2);
+		    					}
+		    					if (endTime.endsWith("A")) {
+		    						endTime = Integer.toString(Integer.parseInt(endTime.split(":")[0]) + 12) + endTime.substring(endTime.indexOf(":"), endTime.length() - 2);
+		    					} else {
+		    						endTime = endTime.substring(0, endTime.length() - 2);
+		    					}
+		    					Boolean done = false;
+		    					int hour = Integer.parseInt(startTime.split(":")[0]);
+		    					int minute = Integer.parseInt(startTime.split(":")[1]);
+		    					int endHour = Integer.parseInt(endTime.split(":")[0]);
+		    					int endMinute = Integer.parseInt(endTime.split(":")[1]);
+		    					while (done == false); {
+		    						if (hour >= endHour) {
+		    							if (minute >= endMinute) {
+		    								timeBlocks.add(Integer.toString(hour) + ":" + Integer.toString(endMinute));
+		    								done = true;
+		    							} else {
+		    								timeBlocks.add(Integer.toString(hour) + ":" + Integer.toString(minute));
+		    								minute += 30;
+		    							}
+		    						} else {
+		    							timeBlocks.add(Integer.toString(hour) + ":" + Integer.toString(minute));
+		    							hour++;
+		    						}
+		    					}
+		    					for (String x: timeBlocks) {
+		    						stmt.executeUpdate(
+		    								"insert or ignore into advisor_schedules values (\"" + advisorName + "\",\"" + x + "\",\"" + lineArray[0] + "\");");
+		    					}
+		    				}
+		    			}
+		    		}
+		    	}
+		    }
+		}
+		//cleanup unused space in sqlite database
+		stmt.executeUpdate("VACUUM;");
+	}
+	
+	private void initDatabase(Statement stmt) throws SQLException {
+		stmt.executeUpdate(
+				"CREATE TABLE room (\n" + 
+				"    number CHAR(3),\n" + 
+				"    PRIMARY KEY (number)\n" + 
+				");\n" + 
+				"CREATE TABLE people (\n" + 
+				"    name VARCHAR(50),\n" + 
+				"    PRIMARY KEY (name)\n" + 
+				");\n" + 
+				"CREATE TABLE class (\n" + 
+				"    crn CHAR(5), --course reference number\n" + 
+				"    subject CHAR(4),\n" + 
+				"    course_number CHAR(3),\n" + 
+				"    section CHAR(3),\n" + 
+				"    title VARCHAR(50), --\"Title\" from csv, not long title\n" + 
+				"    PRIMARY KEY (crn)\n" + 
+				");\n" + 
+				"CREATE TABLE classrooms (\n" + 
+				"    room CHAR(3) REFERENCES room(number),\n" + 
+				"    class CHAR(5) REFERENCES class(crn),\n" + 
+				"    PRIMARY KEY (room, class)\n" + 
+				");\n" + 
+				"CREATE TABLE advisor (\n" + 
+				"    person VARCHAR(50) REFERENCES people(name),\n" + 
+				"    room_number CHAR(3) REFERENCES room(number),\n" + 
+				"    PRIMARY KEY (person)\n" + 
+				");\n" + 
+				"CREATE TABLE instructors (\n" + 
+				"    person VARCHAR(50) REFERENCES people(name),\n" + 
+				"    class CHAR(5) REFERENCES class(crn),\n" + 
+				"    PRIMARY KEY (person, class)\n" + 
+				");\n" + 
+				"CREATE TABLE class_schedules (\n" + 
+				"    class_number CHAR(5) REFERENCES class(crn),\n" + 
+				"    time CHAR(5),\n" + 
+				"    day CHAR(9),\n" + 
+				"    PRIMARY KEY (class_number, time, day)\n" + 
+				");\n" + 
+				"CREATE TABLE advisor_schedules (\n" + 
+				"    advisor CHAR(5) REFERENCES advisor(person),\n" + 
+				"    time CHAR(5),\n" + 
+				"    day CHAR(9),\n" + 
+				"    PRIMARY KEY (advisor, time, day)\n" + 
+				");\n" + 
+				"CREATE TABLE meta (\n" + 
+				"    version CHAR(8), --latest academic period + revision number from csv, ex. \"20173001\"\n" + 
+				"    PRIMARY KEY (version)\n" + 
+				");");
 	}
 }
