@@ -62,7 +62,12 @@ public class Class {
 		//if (hourNumberString.length() <= 1) {
 		//	hourNumberString = "0" + hourNumberString;
 		//}
-		String formattedTime = hourNumberString + ":" + startTime.get().substring(3) + ampm;
+		String formattedTime;
+		if (startTime.get().substring(3).length() < 2) {
+			formattedTime = hourNumberString + ":0" + startTime.get().substring(3) + ampm;
+		} else {
+			formattedTime = hourNumberString + ":" + startTime.get().substring(3) + ampm;
+		}
 		return formattedTime;
 	}
 
@@ -76,12 +81,18 @@ public class Class {
 	}
 
 	public String getInstructor() {
-		String result;
-		if (instructor.length > 1) {
-			result = instructor[0] + ", " + instructor[1];
-		} else {
-			result = instructor[0];
+		String result = "";
+		
+		for (String x: instructor) {
+			//attempt to prettify name
+			if (x.contains(", ")) {
+				String lastName = x.split(",\\s*")[0];
+				String firstName = x.split(",\\s*")[1];
+				x = firstName + " " + lastName;
+			}
+			result = result.concat(x + " ");
 		}
+		result = result.trim();
 		return result;
 	}
 
