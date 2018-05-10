@@ -51,7 +51,12 @@ public class Class {
 	}
 
 	public String getStartTime() {
-		int hourNumber = Integer.parseInt(startTime.get().substring(0, 1));
+		int hourNumber;
+		if (startTime.get().substring(0, 2).contains(":")) {
+			hourNumber = Integer.parseInt(startTime.get().substring(0, 1));
+		} else {
+			hourNumber = Integer.parseInt(startTime.get().substring(0, 2));
+		}
 		String hourNumberString = "";
 		String ampm = "am";
 		if (hourNumber >= 13) {

@@ -126,7 +126,8 @@ public class MainApp extends Application {
 		    		instructors.add(rs2.getString("person"));
 		    	}
 		    	
-		    	rs2 = stmt2.executeQuery("SELECT DISTINCT time FROM class_schedules WHERE class_number = \"" + crn + "\" ORDER BY time ASC;");
+		    	//rs2 = stmt2.executeQuery("SELECT DISTINCT time FROM class_schedules WHERE class_number = \"" + crn + "\" ORDER BY time ASC;");
+		    	rs2 = stmt2.executeQuery("SELECT DISTINCT time FROM class_schedules WHERE class_number = \"" + crn + "\";");
 		    	while (rs2.next()) {
 		    		times.add(rs2.getString("time"));
 		    	}
@@ -452,20 +453,19 @@ public class MainApp extends Application {
 		    					ArrayList<String> timeBlocks = new ArrayList<String>();
 		    					//convert to 24-hour
 		    					if (startTime.endsWith("P") && startTime.startsWith("12")) {
-		    						startTime = startTime.substring(0, startTime.length() - 2);
+		    						startTime = startTime.substring(0, startTime.length() - 1);
 		    					} else if (startTime.endsWith("P")) {
-		    						startTime = Integer.toString(Integer.parseInt(startTime.split(":")[0]) + 12) + startTime.substring(startTime.indexOf(":"), startTime.length() - 2);
+		    						startTime = Integer.toString(Integer.parseInt(startTime.split(":")[0]) + 12) + startTime.substring(startTime.indexOf(":"), startTime.length() - 1);
 		    					} else {
-		    						startTime = startTime.substring(0, startTime.length() - 2);
+		    						startTime = startTime.substring(0, startTime.length() - 1);
 		    					}
 		    					if (endTime.endsWith("P") && endTime.startsWith("12")) {
-		    						endTime = endTime.substring(0, endTime.length() - 2);
+		    						endTime = endTime.substring(0, endTime.length() - 1);
 		    					} else if (endTime.endsWith("P")) {
-		    						endTime = Integer.toString(Integer.parseInt(endTime.split(":")[0]) + 12) + endTime.substring(endTime.indexOf(":"), endTime.length() - 2);
+		    						endTime = Integer.toString(Integer.parseInt(endTime.split(":")[0]) + 12) + endTime.substring(endTime.indexOf(":"), endTime.length() - 1);
 		    					} else {
-		    						endTime = endTime.substring(0, endTime.length() - 2);
+		    						endTime = endTime.substring(0, endTime.length() - 1);
 		    					}
-		    					System.out.println(startTime + " " + endTime);
 		    					Boolean done = false;
 		    					int hour = Integer.parseInt(startTime.split(":")[0]);
 		    					int minute = Integer.parseInt(startTime.split(":")[1]);

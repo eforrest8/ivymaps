@@ -134,6 +134,7 @@ public class AdvisorSearchController {
 	}
 	@FXML
 	private void back() {
+		resultsTable.getSelectionModel().clearSelection();
 		rootLayout.setCenter(mainMenu);
 	}
 	//setters
