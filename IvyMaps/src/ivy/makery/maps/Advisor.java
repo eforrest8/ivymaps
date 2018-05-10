@@ -27,19 +27,20 @@ public class Advisor {
 		String today = DayOfWeek.from(LocalDate.now()).name();
 		int hour = LocalTime.now().getHour();
 		int minute = LocalTime.now().getMinute();
-		int blocksIteration = 0;
+		/*int blocksIteration = 0;
 		for (String x: days) {
+			System.out.println(x + today + blocksIteration);
 			if (x.equalsIgnoreCase(today)) {
 				continue;
 			} else {
 				blocksIteration++;
 			}
-		}
-		for (String x: blocks) {
-			int xhour = Integer.parseInt(x.substring(0, 1));
-			int xminute = Integer.parseInt(x.substring(3));
-			int oldhour = 0;
-			if (blocksIteration == 0) {
+		}*/
+		for (int i = 0; i < blocks.length - 1; i++) {
+			int xhour = Integer.parseInt(blocks[i].substring(0, 1));
+			int xminute = Integer.parseInt(blocks[i].substring(3));
+			//int oldhour = 0;
+			if (days[i].equalsIgnoreCase(today)) {
 				//we are on the right day
 				if (xhour == hour) {
 					if ((xminute - minute) < 0) {
@@ -49,10 +50,10 @@ public class Advisor {
 				}
 			} else {
 				//we are not on the right day
-				if (oldhour > xhour) {
-					blocksIteration--;
-				}
-				oldhour = xhour;
+				//if (oldhour > xhour) {
+				//	blocksIteration--;
+				//}
+				//oldhour = xhour;
 			}
 		}
 		return result;
