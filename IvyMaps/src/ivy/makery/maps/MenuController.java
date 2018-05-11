@@ -1,8 +1,10 @@
 package ivy.makery.maps;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
-import java.net.URISyntaxException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -25,18 +27,33 @@ public class MenuController {
 	
 	private ScrollPane help = new ScrollPane();
 	//private File helpFile = new File("src/help.txt");
-	private File helpFile;
+	//private File helpFile;
 	public String helpText;
 	
 	public void initialize() {
 		try {
-			helpFile = new File(getClass().getResource("help.txt").toURI());
+			/*
+			helpFile = new File(getClass().getResource("rsrc:/help.txt").toURI());
 			byte[] encoded = Files.readAllBytes(Paths.get(helpFile.getAbsolutePath()));
 			helpText = new String(encoded, StandardCharsets.UTF_8);
-		} catch (IOException | URISyntaxException e) {
+			*/
+			InputStream input = getClass().getResourceAsStream("/help.txt");
+			File file = File.createTempFile("help", ".tmp");
+			OutputStream out = new FileOutputStream(file);
+			int read;
+			byte[] bytes = new byte[1024];
+			while ((read = input.read(bytes)) != -1) {
+                out.write(bytes, 0, read);
+            }
+			out.close();
+			file.deleteOnExit();
+			byte[] encoded = Files.readAllBytes(Paths.get(file.getAbsolutePath()));
+			helpText = new String(encoded, StandardCharsets.UTF_8);
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		Text helpTextText = new Text(helpText);
+		helpTextText.setStyle("-fx-font-size: 18");
 		
 		help.setContent(helpTextText);
 		help.setPrefHeight(root.getPrefHeight());
