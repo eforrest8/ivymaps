@@ -30,7 +30,7 @@ public class MenuController {
 	
 	public void initialize() {
 		try {
-			helpFile = new File(getClass().getResource("/help.txt").toURI());
+			helpFile = new File(getClass().getResource("help.txt").toURI());
 			byte[] encoded = Files.readAllBytes(Paths.get(helpFile.getAbsolutePath()));
 			helpText = new String(encoded, StandardCharsets.UTF_8);
 		} catch (IOException | URISyntaxException e) {
