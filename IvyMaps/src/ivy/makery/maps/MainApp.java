@@ -316,7 +316,7 @@ public class MainApp extends Application {
 		
 		Statement stmt = con.createStatement();
 		//does the csv file exist?
-		File classCSV = new File("szrcsch_16713180.csv"); //change this to something simple like "class.csv" later
+		File classCSV = new File("ClassData.csv");
 		File advisorCSV = new File("FacultySchedule.csv");
 		if (classCSV.exists()) {
 			//check version, quit if not new
